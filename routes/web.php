@@ -13,6 +13,11 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('libros', LibroController::class);
 });
 
+// Ruta para mostrar catalogo de libros
+Route::get('/home', [
+    LibroController::class, 'home'
+])->name('home');
+
 // Ruta para obtener la información de un solo libro
 Route::get('/libros/{id}/edit', [
     LibroController::class, 'edit'

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+
 use App\Models\Libro;
 
 class LibroController extends Controller
@@ -91,5 +93,30 @@ class LibroController extends Controller
 
         return redirect()->route('libros.index')
         ->with('success', 'Registro eliminado :D');
+    }
+
+    // MÉTODO PARA HOME
+    public function home(){
+
+        //* LIBROS DE HISTORIA
+
+        $history = Http::get('https://www.googleapis.com/books/v1/volumes', [
+            // Incluir parámetros del manejo de API
+            'q' => 'subject:history',
+            'maxResults' => 12,
+            'key' => config('services.google_books.key'),
+        ])->json()['items'] ?? [];
+        
+        //* LIBROS DE FANTASÍA
+
+        $fantasy = Http::get('https://www.googleapis.com/books/v1/volumes', [
+            // Incluir parámetros del manejo de API
+            'q' => 'subject:fantasy',
+            'maxResults' => 12,
+            'key' => config('services.google_books.key'),
+        ])->json()['items'] ?? [];
+
+        return view('libros.home', compact('history', 'fantasy'));
+
     }
 }
